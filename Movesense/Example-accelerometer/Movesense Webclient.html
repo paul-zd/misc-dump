@@ -1,0 +1,1083 @@
+
+<html>
+  <script>
+    var canvas, ctx;
+    function init(){
+      canvas = document.getElementById("canvas");
+      ctx = canvas.getContext("2d");
+
+      //Edit function below this point
+      ctx.fillStyle = "#eee";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    var points=[];
+    var start=0;
+    var graphLength=150; var maxMagn=60;
+    for(let i=0; i<graphLength; i++) points.push(0);
+    function drawGraph(bg){
+      let w=canvas.width-20; let h=0.6*canvas.height;
+      let h2=(h-10)/maxMagn;
+      ctx.fillStyle = bg;
+      ctx.fillRect(10,10,w,h);
+      ctx.fillStyle="#fff"
+      for(let i=0; i<maxMagn; i+=10)
+        ctx.fillRect(15,h-h2*i,w-10,1);
+      ctx.beginPath();
+      ctx.moveTo(20, h-h2*points[(start)%graphLength]);
+      for(let i=1; i<graphLength; i++)
+        ctx.lineTo(20+(w-20)*(i/graphLength),
+                   h-h2*points[(start+i)%graphLength]);
+      ctx.strokeStyle="#ff9";
+      ctx.lineWidth=3;
+      ctx.stroke();
+    }
+
+    function recieveMsg(values, tag, type){
+      //Edit function below this point
+      if(tag==5 && type==2){
+        for(let i=1; i<values.length; i++){
+          points[start]=Math.min  (values[i],maxMagn);
+          start=(start+1)%graphLength;
+        }
+        drawGraph(values[0]? "#f00":"#ccc");
+      }
+    }
+
+
+  </script>
+  <!-- Nothing beyond this point needs to be edited -->
+  <head>
+    <title>Console</title>
+    <style>
+      .datum{
+        background-color: #ddd;
+        width: 20px;
+        text-align:center;
+        padding:8px 0;
+        border: 0px;
+      }
+      .datum:hover{
+        background-color: #c8c8c8;
+      }
+      .datum.s{
+        background-color: #aaa;
+      }
+      .datumh-top{
+        display:flex;
+        flex-wrap:wrap;
+        gap:3px;
+        padding:3px;
+      }
+      .datumh-bot div{
+        padding:3px;
+        background-color: #ddd;
+      }
+      .datumh-bot div:hover{
+        padding:3px;
+        background-color: #c8c8c8;
+      }
+      .datumh{
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        background-color: #bcbcbc;
+        padding: 3px 2px 5px;
+      }
+      .datums{
+        display:flex;
+        flex-wrap:wrap;
+        gap:8px 5px;
+        padding: 5px;
+      }
+      .response{
+        display:flex;
+        background-color:#aaa;
+        margin:5px;
+      }
+      .resp-inf{
+        display:flex;
+        align-items:center;
+        gap:8px;
+        padding:10px 8px;
+        margin: 5px;
+        margin-right: 2px;
+        background-color: #dce;
+      }
+      .resp-inf div{
+        background-color: #ddd;
+        width: 20px;
+        text-align:center;
+        padding:8px 0;
+      }
+      .resp-colour{
+        width:30px;
+        margin:5px 0px 5px 5px;
+      }
+      #responses{
+        margin-left:50px;
+      }
+
+      #type-menu{
+        list-style:none;
+        padding: 3px;
+        width:60px;
+        top:-17px;
+        left:0px;
+        background-color:#999;
+        position:absolute;
+        display:none;
+      }
+      #type-menu li{
+        background-color:#ddd;
+        padding: 3px 6px 3px;
+      }
+      #type-menu li:hover{
+        background-color:#c4c4c4;
+      }
+
+      #base-toggle div{
+        width:40px;
+        text-align:center;
+        padding:0px 0px;
+        background-color:#bbb;
+      }
+      #base-toggle div.s{
+        background-color:#ddd;
+      }
+      #base-toggle{
+        display:flex;
+        background-color:#aaa;
+        padding:4px;
+        gap:5px;
+      }
+      #base-toggle:hover{
+        background-color:#999;
+      }
+      #panel-header{
+        display:flex;
+        align-items:center;
+        gap:0px;
+      }
+      #connect_button{
+        background-color:#8cf;
+        padding:8px 10px;
+      }
+      #connect_button:hover{
+        background-color:#78b8e8;
+      }
+      #disconnect_button{
+        background-color:#f66;
+        padding:8px 10px;
+      }
+      #disconnect_button:hover{
+        background-color:#e85858;
+      }
+      #download_button{
+        background-color:#ff6;
+        padding:8px 10px;
+      }
+      #download_button:hover{
+        background-color:#e8e858;
+      }
+      #formatted_download{
+        background-color:#fafa5a;
+        padding:8px 10px;
+        width:60px;
+      }
+      #formatted_download:hover{
+        background-color:#e4e454;
+      }
+
+      .sensor-info{
+        display:flex;
+        align-items:center;
+        gap:10px;
+      }
+      .sensor-name{
+        width:220px;
+      }
+      .sensor-colour{
+        height:20px;
+        width:20px;
+      }
+      .include-checkbox{
+        margin-left:7px;
+      }
+      .sensor-info.inner{
+        padding:5px 10px;
+        width:350px;
+      }
+      .sensor-info.outer{
+        background-color:#ddd;
+      }
+      .sensor-info.odd{
+        background-color:#ccc;
+      }
+      .sensor-info.outer:hover{
+        background-color:#bbb;
+      }
+
+      #prefix-input{
+        top:0px;
+      }
+      #prefix-input input{
+        width:35px;
+        top:0px;
+        height:26px;
+        margin-top:3px;
+        margin-bottom:5px;
+      }
+      #reg-input{
+        width:250px;
+        height:26px;
+        margin-top:3px;
+      }
+      #input-field{
+        display:flex;
+        gap:20px;
+        align-items:top;
+        margin-top:0px;
+      }
+      #send-button{
+        text-align:center;
+        padding:5px 10px;
+        background-color: #4f4;
+      }
+      #fat-invisible-element{
+        width:76px;
+      }
+      #connected-table{
+        width:406px;
+        padding:3px;
+        background-color: #ddd;
+        margin: 5px 0px;
+      }
+      a{
+        color:blue;
+      }
+      a:hover{
+        text-decoration:underline;
+      }
+      #req-label{
+        background-color: #bbb;
+        text-align: center;
+        padding: 4px 0px;
+      }
+
+      #panel{
+        position:fixed;
+        top:0px;
+        background-color:#eee;
+        padding:10px;
+      }
+      #hidden-footer{
+        padding:2px;
+        background-color:white;
+      }
+
+      .flare{
+        position:fixed;
+        bottom:0px;
+        background-color:#95f;
+        height:6px;
+        width:100%;
+        left:-5px;
+        opacity:70%;
+        transition: opacity 0.7s, height 1s;
+      }
+      .flare2{
+        height:80px;
+        opacity:0%;
+      }
+
+      .sent{
+        display:flex;
+        background-color:#aaa;
+        margin:10px 5px 10px 70px;
+      }
+      .sent-colors{
+        display:flex;
+      }
+      .sent-colors div{
+        width:30px;
+        margin: 5px;
+        margin-right:0px;
+      }
+      .sent-info{
+        margin:5px;
+      }
+      #pagedown {
+        position:fixed;
+        bottom: 20px;
+      }
+
+      #widget-container{
+        position:fixed;
+        top:-400px;
+        right:10px;
+        transition: top 1s;
+      }
+      #canvas{
+        width:400px;
+        height:400px;
+        border:2px solid black;
+      }
+    </style>
+  </head>
+  <!--todo: sent command logging-->
+  <!--todo: scrolldown button -->
+  <!--todo: automatic command input clensing-->
+  <body id="body">
+    <div id="responses">
+      <div id="tall-boi"></div>
+
+    </div>
+    <div id="hidden-footer"></div>
+    <div id="panel">
+      <div id="panel-header">
+        <div id="connect_button" onclick="select_sensor()"> Add Sensor </div>
+        <div id="disconnect_button" onclick="disconnect_sensor()"> Disconnect </div>
+        <!-- This is because I am bad at css -->
+        <div id="fat-invisible-element"></div>
+        <div id="download_button" onclick="downloadBlob(csvContent,'responses.csv','text/csv;charset=utf-8;')">Download</div>
+        <div id="formatted_download" onclick="downloadFiltered()">(Filtered)</div>
+      </div>
+      <div id="connected-table">
+
+      </div>
+      <div id="input-field">
+        <div id="prefix-input">
+          <input id="res-input" class="input" placeholder="cmd"/>
+        </div>
+        <div id="post-input">
+          <input id="reg-input" class="input" placeholder="message (hexidecimal, bytes sepperated)"/>
+          <!--<div id="base-toggle" onclick="toggleInput()">
+            <div id="hex-ind" class="toggle s"> hex </div>
+            <div id="dec-ind" class="toggle"> dec </div>
+            <div id="ascii-ind" class="toggle"> text </div>
+          </div>-->
+        </div>
+        <div id="send-button" onclick="send(parseValues())">send</div>
+      </div>
+      <div id="note"> first input should be a single byte
+        <a onclick="document.getElementById('note').style.display='none'">(hide)</a>
+      </div>
+    </div>
+    <ul id="type-menu">
+      <li class="typea" onclick="reformatDt('n')">None</li>
+      <li class="typea" onclick="reformatDt('s')">String</li>
+      <li class="type1" onclick="reformatDt(DataView.prototype.getUint8)">Uint8</li>
+      <li class="type1" onclick="reformatDt(DataView.prototype.getInt8)">Int8</li>
+      <li class="type2" onclick="reformatDt(DataView.prototype.getUint16)">Uint16</li>
+      <li class="type2" onclick="reformatDt(DataView.prototype.getInt16)">Int16</li>
+      <li class="type4" onclick="reformatDt(DataView.prototype.getUint32)">Uint32</li>
+      <li class="type4" onclick="reformatDt(DataView.prototype.getInt32)">Int32</li>
+      <li class="type4" onclick="reformatDt(DataView.prototype.getFloat32)">Float32</li>
+      <li class="type8" onclick="reformatDt(DataView.prototype.getBigUint64)">Uint64</li>
+      <li class="type8" onclick="reformatDt(DataView.prototype.getBigInt64)">Int64</li>
+      <li class="type8" onclick="reformatDt(DataView.prototype.getFloat64)">Float64</li>
+    </ul>
+
+    <div id="flare-container"></div>
+    <a id='pagedown' onclick="usefulFunction()">To bottom</a>
+
+    <div id="widget-container">
+      <canvas id="canvas" width=400 height=400></canvas>
+      <div id="arrow-up" onclick="document.getElementById('widget-container').style.top='-400px';
+      document.getElementById('arrow-down').style.display='block';document.getElementById('arrow-up').style.display='none'"
+      style="background-color:#f00; width:100px; color: white; text-align:center; display:none">🡹🡹🡹</div>
+      <div id="arrow-down" onclick="document.getElementById('widget-container').style.top='0px';
+      document.getElementById('arrow-up').style.display='block';document.getElementById('arrow-down').style.display='none'"
+      style="background-color:#07c; width:100px; color: white; text-align:center; display:block">🡻🡻🡻</div>
+    </div>
+  </body>
+
+  <script>
+    responses={}
+    resmap={};
+    deviceColours={};
+    devicePalette=['#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#46f0f0', '#f032e6', '#bcf60c', '#fabebe', '#e6beff', '#9a6324', '#fffac8', '#aaffc3']
+    function reserveColour(){
+      return devicePalette.splice(Math.floor(Math.random()*devicePalette.length),1);
+    }
+    //somewhat desaturated bright color
+    //ugh I cannot decide how colour should be spelled
+    //this is the command/ref color picker
+    function randomColour(){
+      let values=[Math.floor(Math.random()*50+205),Math.floor(Math.random()*50+175),Math.floor(Math.random()*50+145)];
+      let color="#";
+      for(let i=0; i<3; i++)
+        color+=toStr(values.splice(Math.floor(Math.random()*(3-i)),1)[0]);
+      return color;
+    }
+    function usefulFunction(){
+      stick=true;
+      scrollBy(0,1);
+    }
+
+    //it is important that default formats exceed or meet the length of
+    //longest possible message
+    formatDefaults=[[[64,'s']]];
+    formatDefaults.push([[4,DataView.prototype.getUint32]]);
+    for(let i=0; i<15; i++)
+      formatDefaults[1].push([4,DataView.prototype.getFloat32]);
+    formatDefaults.push([[64,'n']]);
+    function copyDefault(n){
+      let format=[];
+      for(let i=0; i<formatDefaults[n].length; i++)
+        format.push([formatDefaults[n][i][0],formatDefaults[n][i][1]]);
+      return format;
+    }
+
+    function toStr(hex){
+      let val=hex.toString(16);
+      return val.length==2? val:("0"+val);
+    }
+    function makeInterior(format, arr){
+      let v=new DataView(arr.buffer);
+      let response="";
+      let current=2;
+      if(arr.length<=2) return response;
+      format.every(datumh=>{
+        let cont=true;
+        let isNumber;
+        let val="";
+        response+='<div class="datumh"><div class="datumh-top">';
+        if(isNumber=current+datumh[0]<=arr.length && !['n','s'].includes(datumh[1])){
+          val=datumh[1].apply(v,[current,true]);
+          if(datumh[1]==DataView.prototype.getFloat32) val=val.toPrecision(6);
+        }
+        for(let i=0; i<datumh[0]; i++){
+          response+='<div class="datum">'+toStr(arr[current])+'</div>';
+          if(!isNumber){
+            //vulnerability btw
+            val+= datumh[1]=='s'? String.fromCharCode(arr[current]):'#';
+          }
+          current++;
+          if(current>=arr.length){
+            cont=false;
+            break;
+          }
+        }
+        response+='</div><div class="datumh-bot"><div class="val-wrapper">';
+        response+=""+val+'</div></div></div>'
+        return cont;
+      });
+      return response
+    }
+
+    let responseNum=0;
+    //takes in uint8_t array
+    function handleResponse(arr,name){
+      responseNum++;
+      let v=new DataView(arr.buffer);
+      let type=''+v.getUint16(0);
+      if(!Object.keys(responses).includes(type)){
+        console.log("adding type "+(arr[0]<3&&arr[0]>0? arr[0]-1: 2));
+        responses[type]={};
+        responses[type]['instances']={};
+        responses[type]['format']= copyDefault(arr[0]<3&&arr[0]>0? arr[0]-1: 2);
+        responses[type]['colour']=randomColour();
+      }
+      responses[type]['instances']['res'+responseNum]=arr;
+      resmap['res'+responseNum]=type;
+
+      let response='<div class="response" id="res'+responseNum+'">';
+      response+='<div class="resp-colour" style="background-color:'+deviceColours[name]+'"></div>'
+      response+='<div class="resp-inf" style="background-color:'+responses[type]['colour']+'"><div class="res">';
+      response+=toStr(arr[0])+'</div><div class="ref">'+toStr(arr[1]);
+      response+='</div></div><div class="datums">';
+
+      response+=makeInterior(responses[type]['format'],arr);
+      response+='</div></div>';
+      let repElem = document.getElementById('responses');
+      let temp = document.createElement('template');
+      temp.innerHTML=response.trim();
+      //console.log(temp);
+      csvContent+=arr.toString()+"\n";
+      repElem.appendChild(temp.content.firstChild);
+      responseObserver.observe(document.getElementById('res'+responseNum));
+      if(!stick) flare();
+      recieveMsg(formatArr(responses[type]['format'],arr),v.getUint8(1),v.getUint8(0));
+    }
+
+    function addSent(msg, colors){
+      let sent='<div class="sent"><div class="sent-colors">';
+      for(let i=0; i<colors.length; i++){
+        sent+='<div style="background-color:'+deviceColours[colors[i]]+'"></div>';
+      }
+      sent+='</div><div class="sent-info">sent to '+colors.length+' device(s): ';
+      sent+=msg+'</div></div>';
+      let repElem = document.getElementById('responses');
+      let temp = document.createElement('template');
+      temp.innerHTML=sent.trim();
+      repElem.appendChild(temp.content.firstChild);
+    }
+
+    function reformat(id){
+      //console.log(id);
+      let elem=document.getElementById(id);
+      let datums=elem.getElementsByClassName('datums')[0];
+      let category=responses[resmap[id]];
+      datums.innerHTML=makeInterior(category['format'], category['instances'][id]);
+    }
+
+    let datumSelectStatus={'now':false, 'id':null, 'start':0};
+    function getDatumNum(elem){
+      let resp=elem.parentElement.parentElement.parentElement.parentElement;
+      return Array.from(resp.getElementsByClassName('datum')).indexOf(elem);
+    }
+    function getDatumByNum(id, num){
+      return document.getElementById(id).getElementsByClassName('datum')[num];
+    }
+    function selectDatums(id, low, high){
+      Array.from(document.getElementsByClassName('datum s')).forEach(elem=>{
+        elem.className='datum';
+      });
+      for(let i=low; i<high+1; i++){
+        getDatumByNum(id,i).className='datum s';
+      }
+    }
+    //this is the most stupid contrived thing here
+    function reformatSl(id, low, high){
+      console.log("reformatting", id, low, high);
+      let format=responses[resmap[id]]['format'];
+      let i=0;
+      let count=0;
+      while(count+format[i][0]<=low){
+        count+=format[i][0];
+        i++;
+      }
+      let needed=high-low+1
+      if(low-count>0){
+        needed-=format[i][0]-low+count;
+        format[i]=[low-count,'n'];
+        i++;
+      }
+      format.splice(i,0,[high-low+1,'n']);
+      while(needed>0){
+        a=format.splice(i+1,1);
+        needed-=a[0][0];
+      }
+      if(needed<0)
+        format.splice(i+1,0,[-needed,'n']);
+    }
+
+    let typeChangeStatus={'now':false, 'id':null, 'datumh':0};
+    function reformatDt(f){
+      let format=responses[resmap[typeChangeStatus['id']]]['format'];
+      format[typeChangeStatus['datumh']][1]=f;
+      Object.keys(onScreen).forEach(x=>reformat(x));
+      stick=bottomVisible;
+      document.getElementById('pagedown').style.display=stick? "none":"block"
+    }
+
+
+    function updateTable(){
+      let table=document.getElementById('connected-table');
+      table.innerHTML="";
+      for(let i=0; i<deviceNames.length; i++){
+        let name=deviceNames[i];
+        let row='<div class="sensor-info outer '+((i%2==1)? 'odd':'even')+'">';
+        row+='<div class="sensor-include">';
+        row+='<input class="include-checkbox" type="checkbox" id="'+"cb"+name+'" '+(checkedStatus[name]? 'checked':'')+'/>';
+        row+='</div><div class="sensor-info inner" onclick="togglecheck(\''+name+'\')">';
+        row+='<div class="sensor-colour" style="background-color:'+deviceColours[name]+'"></div>'
+        row+='<div class="sensor-name">'+name+'</div><div class="sensor-status">'
+          +(connectionStatus[name]? 'connected':'connecting...')+'</div></div></div>';
+        table.innerHTML+=row;
+      }
+    }
+    function togglecheck(name){
+      checkedStatus[name]=!checkedStatus[name];
+      updateTable();
+    }
+
+
+    let clickTarget=null;
+    document.onmousedown=function(e){
+      e = e || window.event;
+      let evt = e;
+      let elem=evt.target;
+      clickTarget=elem;
+      if(elem.className=="datum"){
+        e.preventDefault();
+        datumSelectStatus['now']=true;
+        let id=datumSelectStatus['id']=elem.parentElement.parentElement.parentElement.parentElement.id;
+        let start=datumSelectStatus['start']=getDatumNum(elem);
+        stick=false;
+        document.getElementById('pagedown').style.display=stick? "none":"block"
+        selectDatums(id,start,start);
+      }
+    }
+    document.onmousemove=function(e){
+      e = e || window.event;
+      let evt = e;
+      let elem=evt.target;
+      if(elem!=clickTarget){
+        clickTarget=null;
+      }
+      if(datumSelectStatus['now']){
+        e.preventDefault();
+        let response=document.getElementById(datumSelectStatus['id']);
+        if((elem.className=="datum"||elem.className=="datum s") && response.contains(elem)){
+          let id=datumSelectStatus['id']
+          let hover=getDatumNum(elem);
+          let start=datumSelectStatus['start'];
+          selectDatums(id, ...(hover>start? [start, hover]:[hover,start]));
+        }
+      }
+    }
+    document.onmouseup=function(e){
+      e = e || window.event;
+      let evt = e;
+      let elem=evt.target
+      if(datumSelectStatus['now']){
+        datumSelectStatus['now']=false;
+        selectDatums(null, 1,0);
+        if(elem.className=='datum'){
+          let id=elem.parentElement.parentElement.parentElement.parentElement.id;
+          if(id==datumSelectStatus['id']){
+            let hover=getDatumNum(elem);
+            let start=datumSelectStatus['start'];
+            reformatSl(id, ...(hover>start? [start, hover]:[hover,start]));
+            Object.keys(onScreen).forEach(x=>reformat(x));
+            stick=bottomVisible;
+            document.getElementById('pagedown').style.display=stick? "none":"block"
+          }
+        }
+      }
+      if(typeChangeStatus['now']){
+        typeChangeStatus['now']=false;
+        document.getElementById('type-menu').style.display='none';
+      }
+      if(clickTarget!=null && elem==clickTarget){
+        //console.log("clicked", elem);
+        if(elem.className=="val-wrapper" && typeChangeStatus['now']==false){
+          typeChangeStatus['now']=true;
+          let resp=elem.parentElement.parentElement.parentElement.parentElement;
+          typeChangeStatus['id']=resp.id;
+          typeChangeStatus['datumh']=Array.from(resp.getElementsByClassName('val-wrapper')).indexOf(elem);
+          let num=responses[resmap[resp.id]]['format'][typeChangeStatus['datumh']][0];
+          Array.from(document.getElementById('type-menu').children).forEach(elem=>{
+            elem.style.display=(elem.className=='type'+num||elem.className=='typea')? 'block':'none';});
+          let menu=document.getElementById('type-menu');
+          menu.style.left=e.pageX;
+          menu.style.display='block';
+          //console.log(menu.offsetHeight);
+          menu.style.top=e.clientY>menu.offsetHeight? e.pageY-5-menu.offsetHeight:window.scrollY;
+          stick=false;
+          document.getElementById('pagedown').style.display=stick? "none":"block"
+        }
+      }
+    }
+
+    var inputType=1;
+    function toggleInput(){
+      inputType=inputType%3+1;
+      let i=0;
+      //most necessary forEach
+      Array.from(document.getElementsByClassName('toggle')).forEach(elem=>{
+        elem.className= ++i==inputType? "toggle s":"toggle";
+      });
+    }
+
+    let byteAlert=true;
+    let hexChars=['0','1','2','3','4','5','6','7','8','9','aA','bB','cC','dD','eE','fF'];
+    function parseByte(byte, base){
+      let value=0;
+      Array.from(byte).forEach(char=>{
+        value=value*base;
+        for(let j=0; j<base; j++){
+          if(hexChars[j].includes(char)){
+            value+=j;
+          }
+        }
+      });
+      if(value>255 && byteAlert){
+        alert("a byte in your input has a value greater than 255. This may cause errors.")
+        byteAlert=false;
+      }
+      return value;
+    }
+    function parseValues(){
+      byteAlert=true;
+      let msgBody=[parseByte(document.getElementById('res-input').value,16)]
+      if(inputType<3){
+        msgBody=msgBody.concat(document.getElementById('reg-input').value.match(new RegExp(/[\da-zA-Z]+/g))?.map(x=>{return parseByte(x, inputType==1? 16:10)}));
+      } else {
+        let a=new TextEncoder();
+        msgBody=msgBody.concat(Array.from(a.encode(document.getElementById('reg-input').value))).concat([0]);
+      }
+      return new Uint8Array(msgBody[1]==undefined? [msgBody[0]]:msgBody);
+    }
+    function send(command){
+      pastCmdI=0;
+      if(pastCmdI!=1){
+        pastCmd.push(getInValues());
+      }
+      console.log(command);
+      if(command==null) return;
+      let sendto=[];
+      for(let i=0; i<deviceNames.length; i++){
+        if(document.getElementById("cb"+deviceNames[i]).checked){
+           sendto.push(deviceNames[i]);
+        }
+      }
+      if(sendto.length==0){
+        alert("must select at least one sensor as recipient");
+        return;
+      }
+      //async woes
+      /*sendto.forEach(name=>{
+        charCommand[name].writeValue(command);
+      });*/
+      console.log("sending "+command+" to "+sendto.length+" sensors");
+      addSent(command,sendto);
+      recursiveSend(sendto,command);
+    }
+    //there is no error handling, have fun
+    function recursiveSend(sendto,command){
+      if(sendto.length==0){
+        console.log("sent to all selected sensors successfully");
+        return;
+      }
+      charCommand[sendto.pop()].writeValue(command).then(value=>{
+        recursiveSend(sendto,command);
+      });
+    }
+
+
+    onScreen={};
+    const responseObserver = new IntersectionObserver(entries => {
+      entries.forEach(elem => {
+        //console.log(elem.target);
+        let id=elem.target.id;
+        let intersecting = elem.isIntersecting;
+        reformat(id);
+        if(intersecting){
+          //console.log(id);
+          onScreen[id]=true;
+        }else{
+          delete onScreen[id];
+        }
+      });
+    });
+    let height=window.innerHeight;
+    let bottomMargin=100+window.innerHeight/10
+    let stick=true;
+    document.getElementById('pagedown').style.display=stick? "none":"block"
+    let bottomVisible;
+    let scrollSpd=10;
+    document.getElementById('tall-boi').style.height=height-bottomMargin;
+    document.getElementById('hidden-footer').style.marginTop=bottomMargin-30;
+    const bottomObserver = new IntersectionObserver(entries => {
+      entries.forEach(elem => {
+        bottomVisible = elem.isIntersecting;
+        if(stick&&!bottomVisible){
+          scrollSpd=30;
+          window.scrollBy(0,scrollSpd);
+        }
+        if(bottomVisible){
+          stick=true;
+          document.getElementById('pagedown').style.display=stick? "none":"block"
+        }
+      });
+    });
+    bottomObserver.observe(document.getElementById("hidden-footer"));
+    let prevScroll=0;
+    window.onscroll=function(){
+      let currentScroll=window.scrollY;
+      if(prevScroll>currentScroll){
+        stick=false;
+        document.getElementById('pagedown').style.display=stick? "none":"block"
+      }
+      if(stick&&!bottomVisible){
+        scrollSpd=scrollSpd*1.02;
+        window.scrollBy(0,scrollSpd);
+      }
+      prevScroll=currentScroll
+    }
+    let elemthing;
+    function flare2(elem){
+      elem.className="flare flare2";
+    }
+    function flare3(body, elem){
+      body.removeChild(elem);
+    }
+    function flare(){
+      let body=document.getElementById('flare-container');
+      let elem=document.createElement('div');
+      elem.className="flare";
+      body.appendChild(elem);
+      setTimeout(flare2, 10,elem);
+      setTimeout(flare3,1000,body,elem);
+    }
+
+    let csvContent='';
+    function downloadBlob(content, filename, contentType) {
+      var blob = new Blob([content], { type: contentType });
+      var url = URL.createObjectURL(blob);
+      var pom = document.createElement('a');
+      pom.href = url;
+      pom.setAttribute('download', filename);
+      pom.click();
+    }
+    //well I wouldn't have coded things this way had I known things would
+    //have turned out this way, but projects adapt I suppose. CTRL-c ftw.
+    function formatArr(format, arr){
+      let v=new DataView(arr.buffer);
+      let response=[];
+      let current=2;
+      if(arr.length<=2) return response;
+      format.every(datumh=>{
+        let cont=true;
+        let isNumber;
+        let val="";
+        if(isNumber=current+datumh[0]<=arr.length && !['n','s'].includes(datumh[1])){
+          val=datumh[1].apply(v,[current,true]);
+          if(datumh[1]==DataView.prototype.getFloat32) val=val.toPrecision(6);
+        }
+        for(let i=0; i<datumh[0]; i++){
+          if(!isNumber){
+            val+= datumh[1]=='s'? String.fromCharCode(arr[current]):'#';
+          }
+          current++;
+          if(current>=arr.length){
+            cont=false;
+            break;
+          }
+        }
+        response.push(val);
+        return cont;
+      });
+      return response
+    }
+    function downloadFiltered(){
+      heading = prompt("Type a heading (hexidecimal) to filter downloads by (i.e. \"3 0\")").match(new RegExp(/[A-Fa-f0-9]+/gm));
+      type=parseByte(heading[0],16)*256+parseByte(heading[1],16);
+      format=responses[type]['format'];
+      instances=responses[type]['instances'];
+      csvBlob="";
+      for (const [key, value] of Object.entries(instances)) {
+        csvBlob+=formatArr(format, value).join(", ")+"\n"
+      }
+      downloadBlob(csvBlob, "responses.csv", "text/csv;charset=utf-8;")
+    }
+    let pastCmd=[];
+    let curCmdBuffer=[];
+    let pastCmdI=0;
+    function getInValues(){
+      return [document.getElementById('res-input').value,
+              document.getElementById('reg-input').value, inputType];
+    }
+    function setInValues(arr){
+      //console.log(arr);
+      document.getElementById('res-input').value=arr[0];
+      document.getElementById('reg-input').value=arr[1];
+      while(inputType!=arr[2]){
+        toggleInput();
+      }
+    }
+    Array.from(document.getElementsByClassName("input")).forEach(elem=>{elem.addEventListener('keyup', e=>{
+      let key=e.key;
+      if(key=='Enter'){
+        send(parseValues());
+      }
+
+      if(key=='ArrowUp'){
+        if(pastCmdI<pastCmd.length){
+          if(pastCmdI==0) curCmdBuffer=getInValues();
+          pastCmdI++;
+          //console.log(pastCmdI,pastCmd[pastCmd.length-pastCmdI]);
+          setInValues(pastCmd[pastCmd.length-pastCmdI]);
+        }
+      }
+      if(key=='ArrowDown'){
+        if(pastCmdI>0){
+          pastCmdI--;
+          if(pastCmdI==0) setInValues(curCmdBuffer);
+          else setInValues(pastCmd[pastCmd.length-pastCmdI]);
+        }
+      }
+    })})
+    init();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  <script>
+    //the following functions deal with connecting to the sensors and forwarding connections
+    //derived mostly from movesense sample gatt_sensordata webclient
+    var deviceNames = [];
+    var selectedDevice = {};
+    var connectionStatus = {};
+    var checkedStatus={};
+    var charData = {};
+    var charCommand = {};
+
+    function select_sensor() {
+      navigator.bluetooth.requestDevice({
+        filters: [{
+          namePrefix: ['Movesense']
+        }],
+        optionalServices: ['34802252-7185-4d5d-b431-630e7050e8f0'], // sensordata-service
+      }).
+        then(device => {
+          deviceNames.push(device.name);
+          connectionStatus[device.name] = false;
+          checkedStatus[device.name]=false;
+          deviceColours[device.name]=reserveColour();
+          selectedDevice[device.name] = device;
+          charData[device.name] = null;
+          charCommand[device.name] = null;
+          console.log("Device " + deviceNames + " selected.");
+          updateTable();
+          return connect_sensor(device.name);
+        })
+        .catch(error => {
+          console.log("select_sensor error: ", error.toString());
+          // TODO: replace this with a proper handler
+          if (!(error.toString().includes("cancelled"))) {
+            let name = deviceNames.pop();
+            let tmp = selectedDevice[name];
+            delete charData[name];
+            delete connectionStatus[name];
+            delete checkedStatus[name];
+            devicePalette.push(deviceColours[name]);
+            delete deviceColours[name];
+            delete charCommand[name];
+            delete selectedDevice[name];
+            tmp.gatt.disconnect();
+            updateTable();
+          }
+        });
+    }
+
+    function connect_sensor(name) {
+      return new Promise(function (resolve, reject) {
+        selectedDevice[name].addEventListener('gattserverdisconnected', onDeviceDisconnected);
+        selectedDevice[name].gatt.connect()
+          .then(server => {
+            console.log("server: ", server);
+            return server.getPrimaryService('34802252-7185-4d5d-b431-630e7050e8f0');
+          })
+          .then(service => {
+            console.log('Getting Characteristics...');
+            // Get all characteristics.
+            return service.getCharacteristics();
+          })
+          .then(characteristics => {
+            console.log(characteristics);
+            console.log('> Characteristics: ' +
+              characteristics.map(c => c.uuid).join('\n' + ' '.repeat(19)));
+            for (i = 0; i < characteristics.length; i++) {
+              let char = characteristics[i];
+              if (char.uuid.length >= 36) {
+                let uuid16 = char.uuid.slice(4, 8);
+                if (uuid16 == '0001') {
+                  console.log("charCommand: ", uuid16);
+                  charCommand[name] = char;
+                }
+                else if (uuid16 == '0002') {
+                  console.log("charData: ", uuid16);
+                  charData[name] = char;
+                }
+              }
+            }
+            return charData[name].startNotifications();
+          })
+          .then(_ => {
+            console.log('> Notifications started');
+            charData[name].addEventListener('characteristicvaluechanged',
+              handleNotifications);
+          })
+          .then(() => {
+            console.log("Connected");
+            connectionStatus[name] = true;
+            checkedStatus[name]=true;
+            updateTable();
+            resolve(name);
+          })
+          .catch(error => {
+            console.log("BLE error: ", error.toString());
+            reject(error);
+          });
+      });
+    }
+
+    function onDeviceDisconnected(event) {
+      let device = event.target;
+      console.log('Device ' + device.name + ' is disconnected.');
+      //alert(device.name + " disconnected");
+      // If a device with wrong characteristics is disconnected
+      if (!(Object.keys(selectedDevice).includes(device.name))) {
+        return;
+      }
+      charData[device.name] = null;
+      charCommand[device.name] = null;
+
+      if (selectedDevice[device.name] != null) {
+        connectionStatus[device.name] = false;
+        checkedStatus[device.name]=false;
+        connect_sensor(device.name);
+      }
+      else {
+        delete charData[device.name];
+        delete connectionStatus[device.name];
+        delete checkedStatus[device.name];
+        delete charCommand[device.name];
+        delete selectedDevice[device.name];
+        devicePalette.push(deviceColours[device.name]);
+        delete deviceColours[device.name];
+
+        var index = deviceNames.indexOf(device.name);
+        deviceNames.splice(index, 1);
+        console.log(deviceNames);
+        if (deviceNames.length != 0) {
+          // Call disconnect_sensor until all the sensors are disconnected
+          disconnect_sensor();
+        }
+      }
+      updateTable();
+    }
+
+    //disconnects everything due to above loop
+    function disconnect_sensor(){
+      let name = deviceNames[deviceNames.length-1];
+      let device = selectedDevice[name];
+      selectedDevice[name] = null;
+      device.gatt.disconnect();
+      connectionStatus[name] = false;
+      checkedStatus[name]=false;
+    }
+
+    window.addEventListener('beforeunload', function (e) {
+      e.preventDefault();
+      disconnect_sensor();
+      e.returnValue = 'disconnected';
+    });
+
+    function handleNotifications(event) {
+      handleResponse(new Uint8Array(event.target.value.buffer), event.target.service.device.name);
+    }
+  </script>
+
+
+
+
+
+</html>
+
+
+
+
+<!-- hi-->
